@@ -7,7 +7,6 @@ const web3 = new Web3(RPC_URL);
 const PRIVATE_KEY = ""; // Nhập private key có 0x ở đầu
 const ACCOUNT = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
 const DELAY_TX = 10000; // 10 giây mỗi giao dịch
-const DELAY_TXS = 5 * 60 * 1000; // 5 phút chạy lại 1 lần
 
 async function getBalance(address: any) {
   try {
@@ -30,6 +29,7 @@ async function sendRandomNativeToken() {
   const url = `https://gist.githubusercontent.com/trangchongcheng/3f7769b1c3fb1a6f5d44a1fee8db5831/raw/?_=${timestamp}`;
   const { data } = await axios.get(url);
   const wallets = data;
+
   for (let i = 0; i < wallets.length; i++) {
     const recipientAddress = wallets[i];
     const amount = web3.utils.toWei(
@@ -63,9 +63,20 @@ async function sendRandomNativeToken() {
 
     await new Promise((resolve) => setTimeout(resolve, DELAY_TX));
   }
+
   console.log("Hoàn thành gửi token $NEX\n");
   await getBalance(ACCOUNT.address);
-  console.log("============= ĐỢI 5 PHÚT CHẠY LẠI...==============\n\n");
 }
-sendRandomNativeToken();
-setInterval(sendRandomNativeToken, DELAY_TXS);
+
+async function runWithRandomDelay() {
+  await sendRandomNativeToken();
+  const randomDelay = (5 + Math.random() * 5) * 60 * 1000; // Random từ 5 đến 10 phút
+  console.log(
+    `============= ĐỢI ${
+      randomDelay / 1000 / 60
+    } PHÚT CHẠY LẠI...==============\n\n`
+  );
+  setTimeout(runWithRandomDelay, randomDelay);
+}
+
+runWithRandomDelay();
