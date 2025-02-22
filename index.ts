@@ -32,6 +32,7 @@ async function sendRandomNativeToken() {
 
   for (let i = 0; i < wallets.length; i++) {
     const recipientAddress = wallets[i];
+    const nonce = await web3.eth.getTransactionCount(recipientAddress);
     const amount = web3.utils.toWei(
       (0.01 + Math.random() * 0.15).toFixed(2),
       "ether"
@@ -54,7 +55,7 @@ async function sendRandomNativeToken() {
         `Giao dịch ${i + 1}/${wallets.length} thành công ${web3.utils.fromWei(
           amount,
           "ether"
-        )} $NEX to: ${recipientAddress}, tx: `,
+        )} $NEX to: ${recipientAddress} (tổng tx: ${nonce}), tx: `,
         receipt.transactionHash
       );
     } catch (error) {
