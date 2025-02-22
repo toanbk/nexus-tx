@@ -67,4 +67,5 @@ async function sendRandomNativeToken() {
   await getBalance(ACCOUNT.address);
   console.log("============= ĐỢI 5 PHÚT CHẠY LẠI...==============\n\n");
 }
+sendRandomNativeToken();
 setInterval(sendRandomNativeToken, DELAY_TXS);
